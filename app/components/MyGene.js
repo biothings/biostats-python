@@ -59,13 +59,13 @@ class MyGene extends React.Component {
     axios.get('https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgICAq_OHCgw').then(response=>{
       let res =[];
       let arr = response.data.rows;
-      console.log('pie res',response.data)
+      // console.log('pie res',response.data)
       res.push(['Endpoint', 'Sessions']);
       for (var i = 0; i < arr.length; i++) {
         res.push([arr[i][0],parseFloat(arr[i][1])]);
       }
 
-      console.log('final arr', res)
+      // console.log('final arr', res)
 
       google.charts.load('current', {packages: ['corechart', 'bar']});
       google.charts.setOnLoadCallback(drawBasic);
@@ -101,13 +101,13 @@ class MyGene extends React.Component {
     axios.get('https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDA8puGCgw').then(response=>{
       let res =[];
       let arr = response.data.rows;
-      console.log('pie res',response.data)
+      // console.log('pie res',response.data)
       res.push(['Action', 'Sessions']);
       for (var i = 0; i < arr.length; i++) {
         res.push([arr[i][0],parseFloat(arr[i][1])]);
       }
 
-      console.log('final arr', res)
+      // console.log('final arr', res)
 
       google.charts.load('current', {packages: ['corechart', 'bar']});
       google.charts.setOnLoadCallback(drawBasic);
@@ -143,7 +143,7 @@ class MyGene extends React.Component {
   fetchAnalyticsData(){
     var self = this;
     axios.get(self.state.analyticsURL).then(res=>{
-      console.log('analytics', res.data);
+      // console.log('analytics', res.data);
       this.setState({
         'results': res.data
       })
@@ -157,7 +157,7 @@ class MyGene extends React.Component {
   }
 
   fetchRealtimeUsers(){
-    axios.get('	https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDAsbqFCgw').then(response=>{
+    axios.get('https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDAsbqFCgw').then(response=>{
       let users = parseInt(response.data.totalsForAllResults['rt:activeUsers']);
       this.setState({
         activeUsers: users

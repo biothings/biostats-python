@@ -7,7 +7,7 @@ class ChartComp extends React.Component {
   constructor() {
     super()
     this.state = {
-
+      data:[]
     }
 
     this.addComma = this.addComma.bind(this)
@@ -17,7 +17,6 @@ class ChartComp extends React.Component {
   }
 
   componentDidUpdate() {
-    // console.log('props received', this.props.chartData);
 
     let arr = this.props.chartData;
 

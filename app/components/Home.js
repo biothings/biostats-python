@@ -2,12 +2,10 @@ import React, { PropTypes } from 'react';
 import {Link} from 'react-router-dom';
 import { connect } from 'react-redux'
 import axios from 'axios';
-import MyGenePanel from './MyGenePanel';
-import MyVariantPanel from './MyVariantPanel';
-import MyChemPanel from './MyChemPanel';
-import BioThingsPanel from './BioThingsPanel';
+import MyVariant from './MyVariant';
+import MyChem from './MyChem';
+import BioThings from './BioThings';
 import Welcome from './Welcome';
-
 import MyGene from './MyGene';
 
 class Home extends React.Component {
@@ -89,9 +87,9 @@ class Home extends React.Component {
       self.handleKeyPressed(e.key);
     };
 
-    // var timer =setInterval(function(){
-    //   self.rotateView();
-    // }, 120000);
+    var timer =setInterval(function(){
+      self.rotateView();
+    }, 120000);
   }
 
   render() {
@@ -108,9 +106,9 @@ class Home extends React.Component {
         }
 
         {this.state.display === 'MyGene' && <MyGene/>}
-        {this.state.display === 'MyVariant' && <MyVariantPanel/>}
-        {this.state.display === 'MyChem' && <MyChemPanel/>}
-        {this.state.display === 'BioThings' && <BioThingsPanel/>}
+        {this.state.display === 'MyVariant' && <MyVariant/>}
+        {this.state.display === 'MyChem' && <MyChem/>}
+        {this.state.display === 'BioThings' && <BioThings/>}
         {!this.state.display && <Welcome/>}
       </section>
     );
