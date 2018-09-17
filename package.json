@@ -1,0 +1,59 @@
+{
+  "name": "react-base",
+  "version": "1.0.0",
+  "description": "A MERN app skeleton",
+  "main": "./app/components/app.js",
+  "scripts": {
+    "build": "webpack -p --progress --config webpack.config.js",
+    "dev-build": "webpack --progress -d --config webpack.config.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "webpack --progress -d --config webpack.config.js --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcodarko/react-base.git"
+  },
+  "author": "Marco Cano",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marcodarko/react-base/issues"
+  },
+  "homepage": "https://github.com/marcodarko/react-base#readme",
+  "dependencies": {
+    "animejs": "^2.2.0",
+    "axios": "^0.18.0",
+    "chart.js": "^2.7.2",
+    "connected-react-router": "^4.3.0",
+    "d3-geo": "^1.11.1",
+    "history": "^4.7.2",
+    "lodash": "^4.17.10",
+    "method-override": "^3.0.0",
+    "node-cron": "^1.2.1",
+    "react": "^16.4.1",
+    "react-countup": "^4.0.0-alpha.6",
+    "react-dom": "^16.4.1",
+    "react-redux": "^5.0.7",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1",
+    "react-simple-maps": "^0.12.1",
+    "react-svg-map": "^1.0.6",
+    "redux": "^4.0.0",
+    "redux-devtools-extension": "^2.13.5",
+    "topojson-client": "^3.0.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.22.1",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "css-loader": "^1.0.0",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "html-webpack-plugin": "^3.2.0",
+    "node-sass": "^4.9.2",
+    "sass-loader": "^7.0.3",
+    "style-loader": "^0.21.0",
+    "webpack": "^4.16.1",
+    "webpack-cli": "^3.1.0"
+  }
+}
