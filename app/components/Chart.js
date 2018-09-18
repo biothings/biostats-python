@@ -11,14 +11,13 @@ class ChartComp extends React.Component {
     }
 
     this.addComma = this.addComma.bind(this)
+    this.drawChart = this.drawChart.bind(this)
   }
   addComma(number){
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
-  componentDidUpdate() {
-
-    let arr = this.props.chartData;
+  drawChart(arr){
 
     var myLineChart = new Chart(document.getElementById("line-chart"), {
           type: 'bar',
@@ -44,6 +43,11 @@ class ChartComp extends React.Component {
         });
   }
 
+  componentDidUpdate() {
+    let arr = this.props.chartData;
+    this.drawChart(arr);
+  }
+
 
   componentDidMount() {
 
@@ -61,7 +65,8 @@ class ChartComp extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    'mapData' : state.mapData
+    'mapData' : state.mapData,
+    'chartData': state.chartData
   }
 }
 

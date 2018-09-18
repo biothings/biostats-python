@@ -167,6 +167,7 @@ class MyGene extends React.Component {
       if (this.state.activeUsersHistory.length > 10) {
         this.state.activeUsersHistory.shift();
       }
+      this.props.sendChartData(this.state.activeUsersHistory);
 
     }).catch(err=>{
       throw err;
@@ -225,7 +226,8 @@ class MyGene extends React.Component {
                         duration={3}
                         separator=","/>
           </div>
-          <Chart chartData={this.state.activeUsersHistory}/>
+          {/* <Chart chartData={this.state.activeUsersHistory}/> */}
+          <Chart/>
         </div>
         <br/>
 
@@ -252,6 +254,10 @@ function mapDispatchToProps(dispatch) {
   return {
     sendMapData: (value)=>{
       const action = {type: "UPDATE-MAP", payload: value};
+      dispatch(action);
+    },
+    sendChartData: (value)=>{
+      const action = {type: "UPDATE-CHART", payload: value};
       dispatch(action);
     }
   }
