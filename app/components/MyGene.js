@@ -13,6 +13,9 @@ class MyGene extends React.Component {
     super(props);
     this.state={
         analyticsURL : 'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgICAmdKFCgw',
+        realtimeURL:'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDAsbqFCgw',
+        pagesURL: 'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgICAq_OHCgw',
+        actionsURL: 'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDA8puGCgw',
         activeUsers: 0,
         totalUsers: 0,
         results:[],
@@ -56,7 +59,7 @@ class MyGene extends React.Component {
   }
 
   drawPages(){
-    axios.get('https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgICAq_OHCgw').then(response=>{
+    axios.get(this.state.pagesURL).then(response=>{
       let res =[];
       let arr = response.data.rows;
       // console.log('pie res',response.data)
@@ -98,7 +101,7 @@ class MyGene extends React.Component {
   }
 
   drawActions(){
-    axios.get('https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDA8puGCgw').then(response=>{
+    axios.get(this.state.actionsURL).then(response=>{
       let res =[];
       let arr = response.data.rows;
       // console.log('pie res',response.data)
@@ -157,7 +160,7 @@ class MyGene extends React.Component {
   }
 
   fetchRealtimeUsers(){
-    axios.get('https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDAsbqFCgw').then(response=>{
+    axios.get(this.state.realtimeURL).then(response=>{
       let users = parseInt(response.data.totalsForAllResults['rt:activeUsers']);
       this.setState({
         activeUsers: users
@@ -201,7 +204,7 @@ class MyGene extends React.Component {
       self.setState({
         lastActiveUsers: self.state.activeUsers
       })
-      self.fetchRealtimeUsers()
+      self.fetchRealtimeUsers();
     }, 60000);
   }
 
@@ -226,7 +229,6 @@ class MyGene extends React.Component {
                         duration={3}
                         separator=","/>
           </div>
-          {/* <Chart chartData={this.state.activeUsersHistory}/> */}
           <Chart/>
         </div>
         <br/>

@@ -33,7 +33,6 @@ class Welcome extends React.Component {
   render() {
     return (
       <div style={{textAlign:'center',paddingTop:'100px'}}>
-        {this.props.user.givenName && <h2 className="noMargin padding20" style={{color:'grey'}}>welcome, {this.props.user.givenName}!</h2>}
         {/* <img style={{width:'50vw'}} src='img/biostats.svg'></img> */}
           <svg viewBox="0 0 1014 457" width='50vw'>
             <polygon id="polymorph" className="st0" points="966.7,325.8 966.7,135.2 837,135.2 837,325.8 817.3,325.8 817.3,210.1 691.1,210.1
@@ -154,7 +153,7 @@ class Welcome extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    user : state.user
+
   }
 }
 

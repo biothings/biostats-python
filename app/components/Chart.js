@@ -7,24 +7,23 @@ class ChartComp extends React.Component {
   constructor() {
     super()
     this.state = {
-      data:[]
+      data:[],
     }
 
-    this.addComma = this.addComma.bind(this)
     this.drawChart = this.drawChart.bind(this)
   }
-  addComma(number){
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
 
-  drawChart(arr){
+
+  drawChart(){
+
+    console.log('props',this.props.chartData);
 
     var myLineChart = new Chart(document.getElementById("line-chart"), {
           type: 'bar',
           data: {
-            labels: arr,
+            labels: this.props.chartData,
             datasets: [{
-                data: arr,
+                data: this.props.chartData,
                 label: "Active Users",
                 backgroundColor: 'white'
               }
@@ -44,8 +43,7 @@ class ChartComp extends React.Component {
   }
 
   componentDidUpdate() {
-    let arr = this.props.chartData;
-    this.drawChart(arr);
+    this.drawChart();
   }
 
 
@@ -55,6 +53,7 @@ class ChartComp extends React.Component {
   }
 
   render() {
+    console.log('render happening')
     return (
       <div style={{flex:1}}>
         <canvas style={{height:'px !important'}} id="line-chart" width="100%" ></canvas>
