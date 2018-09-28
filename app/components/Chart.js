@@ -11,12 +11,22 @@ class ChartComp extends React.Component {
     }
 
     this.drawChart = this.drawChart.bind(this)
+    this.getRandomColor = this.getRandomColor.bind(this)
+  }
+
+  getRandomColor() {
+      var letters = '0123456789ABCDEF'.split('');
+      var color = '#';
+      for (var i = 0; i < 6; i++ ) {
+          color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
   }
 
 
   drawChart(){
 
-    console.log('props',this.props.chartData);
+    // console.log('props',this.props.chartData);
 
     var myLineChart = new Chart(document.getElementById("line-chart"), {
           type: 'bar',
@@ -25,18 +35,37 @@ class ChartComp extends React.Component {
             datasets: [{
                 data: this.props.chartData,
                 label: "Active Users",
-                backgroundColor: 'white'
+                backgroundColor: this.getRandomColor(),
+                highlightFill:this.getRandomColor()
               }
             ]
           },
           options: {
             responsive: true,
             mode: null,
-            legend: { display: false },
+            legend: {
+                labels: {
+                    fontColor: "white",
+                    fontSize: 10
+                }
+            },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    fontColor: "white",
+                    beginAtZero: true
+                }
+            }],
+            xAxes: [{
+                ticks: {
+                    fontColor: "white",
+                }
+            }]
+        },
             title: {
               display: true,
-              text: 'User Activity',
-              color: 'white'
+              text: 'User Activity History',
+              fontColor: 'white'
             }
           }
         });
@@ -53,9 +82,8 @@ class ChartComp extends React.Component {
   }
 
   render() {
-    console.log('render happening')
     return (
-      <div style={{flex:1}}>
+      <div className="col-sm-12 col-md-4 col-lg-4">
         <canvas style={{height:'px !important'}} id="line-chart" width="100%" ></canvas>
       </div>
     )

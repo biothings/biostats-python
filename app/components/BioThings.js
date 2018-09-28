@@ -12,10 +12,12 @@ class BioThings extends React.Component {
   constructor(props) {
     super(props);
     this.state={
+        'top100usersURL':'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDA0_SPCQw',
+        sessionsURL:'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgICA2uOGCgw',
         analyticsURL : 'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgICAutGQCgw',
         realtimeURL:'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDAyMWMCgw',
-        top5PagesURL:'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDAk4eHCgw',
-        top5ActionsURL:'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgICAuqiOCgw',
+        pagesURL:'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDAk4eHCgw',
+        actionsURL:'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgICAuqiOCgw',
         activeUsers: 0,
         totalUsers: 0,
         results:[],
@@ -25,12 +27,17 @@ class BioThings extends React.Component {
         activeUsersHistory:[],
         timer: null,
         devices:[],
+        totalSessions: 0,
+        'top100results': []
     }
     this.fetchAnalyticsData = this.fetchAnalyticsData.bind(this);
     this.fetchRealtimeUsers = this.fetchRealtimeUsers.bind(this);
     this.shapeMapData = this.shapeMapData.bind(this);
     this.addComma = this.addComma.bind(this);
     this.getUniqueItemsInTopPages = this.getUniqueItemsInTopPages.bind(this);
+    this.drawPages = this.drawPages.bind(this);
+    this.drawActions = this.drawActions.bind(this);
+    this.fetchTop100 = this.fetchTop100.bind(this);
   }
 
   addComma(number){
@@ -56,6 +63,89 @@ class BioThings extends React.Component {
 
   }
 
+  drawPages(){
+    axios.get(this.state.pagesURL).then(response=>{
+      let res =[];
+      let arr = response.data.rows;
+      // console.log('pie res',response.data)
+      res.push(['Endpoint', 'Sessions']);
+      for (var i = 0; i < arr.length; i++) {
+        res.push([arr[i][0],parseFloat(arr[i][1])]);
+      }
+
+      // console.log('final arr', res)
+
+      google.charts.load('current', {packages: ['corechart', 'bar']});
+      google.charts.setOnLoadCallback(drawBasic);
+
+      function drawBasic() {
+
+            var data = google.visualization.arrayToDataTable(res);
+
+            var options = {
+              title: 'Top 5 Endpoints',
+              chartArea: {width: '50%'},
+              hAxis: {
+                title: 'Sessions',
+                minValue: 0
+              },
+              vAxis: {
+                title: 'Endpoint'
+              },
+              'tooltip' : {
+                isHtml: true
+              }
+            };
+
+            var chart = new google.visualization.BarChart(document.getElementById('chart_pages'));
+
+            chart.draw(data, options);
+          }
+    })
+
+  }
+
+  drawActions(){
+    axios.get(this.state.actionsURL).then(response=>{
+      let res =[];
+      let arr = response.data.rows;
+      // console.log('pie res',response.data)
+      res.push(['Action', 'Sessions']);
+      for (var i = 0; i < arr.length; i++) {
+        res.push([arr[i][0],parseFloat(arr[i][1])]);
+      }
+
+      // console.log('final arr', res)
+
+      google.charts.load('current', {packages: ['corechart', 'bar']});
+      google.charts.setOnLoadCallback(drawBasic);
+
+      function drawBasic() {
+
+            var data = google.visualization.arrayToDataTable(res);
+
+            var options = {
+              title: 'Top 5 Requests',
+              chartArea: {width: '50%'},
+              hAxis: {
+                title: 'Sessions',
+                minValue: 0
+              },
+              vAxis: {
+                title: 'Request'
+              },
+              'tooltip' : {
+                isHtml: true
+              }
+            };
+
+            var chart = new google.visualization.BarChart(document.getElementById('chart_actions'));
+
+            chart.draw(data, options);
+          }
+    })
+
+  }
 
 
   fetchAnalyticsData(){
@@ -67,6 +157,17 @@ class BioThings extends React.Component {
       })
       this.shapeMapData();
 
+
+    }).catch(err=>{
+      throw err;
+    })
+
+    axios.get(self.state.sessionsURL).then(res=>{
+      // console.log('analytics', res.data);
+      let users = parseInt(res.data['totalsForAllResults']['ga:sessions']);
+      this.setState({
+        'totalSessions': users
+      })
 
     }).catch(err=>{
       throw err;
@@ -85,19 +186,47 @@ class BioThings extends React.Component {
       if (this.state.activeUsersHistory.length > 10) {
         this.state.activeUsersHistory.shift();
       }
+      this.props.sendChartData(this.state.activeUsersHistory);
 
     }).catch(err=>{
       throw err;
     })
   }
 
+  fetchTop100(){
+    var self = this;
+    axios.get(self.state.top100usersURL).then(res=>{
+      this.setState({
+        'top100results': res.data
+      })
+      this.shape100Data();
+    }).catch(err=>{
+      throw err;
+    })
+  }
+
+  shape100Data(){
+    let res =[]
+    let arr = this.state.top100results.rows;
+    for (var i = 0; i < arr.length; i++) {
+      let long = parseFloat(arr[i][2]);
+      let lat = parseFloat(arr[i][1]);
+      let obj ={'name': arr[i][0],'coordinates':[long,lat],'users': arr[i][3] };
+      res.push(obj);
+    }
+    // this.setState({
+    //   'mapData': res
+    // });
+    this.props.sendMap100Users(res);
+  }
+
   shapeMapData(){
     let res =[]
     let arr = this.state.results.rows;
     for (var i = 0; i < arr.length; i++) {
-      let long = parseFloat(arr[i][4]);
-      let lat = parseFloat(arr[i][5]);
-      let obj ={'name': arr[i][3]+', '+arr[i][2],'coordinates':[lat,long],'users': arr[i][7] };
+      let long = parseFloat(arr[i][5]);
+      let lat = parseFloat(arr[i][4]);
+      let obj ={'name': arr[i][2]+', '+arr[i][3],'coordinates':[lat,long],'users': arr[i][7] };
       res.push(obj);
     }
     this.setState({
@@ -112,11 +241,14 @@ class BioThings extends React.Component {
     var self = this;
     this.fetchAnalyticsData();
     this.fetchRealtimeUsers();
+    this.fetchTop100();
+    this.drawPages();
+    this.drawActions();
     this.timer =setInterval(function(){
       self.setState({
         lastActiveUsers: self.state.activeUsers
       })
-      self.fetchRealtimeUsers()
+      self.fetchRealtimeUsers();
     }, 60000);
   }
 
@@ -128,24 +260,52 @@ class BioThings extends React.Component {
   render() {
     return (
       <section className="margin0Auto padding20 centerText mB-back">
-        <div style={{width:'100%', clear:'both'}}>
-          <img src="/static/img/biothings-text.png" width="300px" className="margin20"/>
-          <button style={{position:'absolute', right:'20px'}} className='btn btn-yellow' onClick={this.fetchAnalyticsData}>Refresh</button>
-        </div>
-        <div className="activeUsersBoxTest margin20 flex" style={{width:'50%', margin:'auto'}}>
-          <div style={{flex:1}}>
-            <h2 className="whiteText">Active Users Right Now</h2>
-            <CountUp  className="whiteText activeUsers-BioThings"
-                        start={this.state.lastActiveUsers}
-                        end={this.state.activeUsers}
-                        duration={3}
-                        separator=","/>
+        <div className="container">
+          <div className="row">
+            <div className="col-sm-12 col-md-6 col-lg-6">
+              <img src="/static/img/biothings-text.png" width="300px" className="margin20"/>
+            </div>
+            <div className="col-sm-12 col-md-6 col-lg-6">
+              <p className="text-muted">
+                Anaylitic data displayed is collected from the last 30 days
+              </p>
+              {/* <a className="github-button" href="https://github.com/biothings/mygene.info/subscription" data-size="large" data-show-count="true" aria-label="Watch biothings/mygene.info on GitHub">Watch</a> */}
+              <button className='btn btn-outline-secondary' onClick={this.fetchAnalyticsData}>Refresh</button>
+            </div>
+            <div className="col-sm-12 col-md-12 col-lg-12">
+                <div className=" row activeUsersBoxTest">
+                  <div className="col-sm-12 col-md-4 col-lg-4">
+                    <h2 className="whiteText">Active Users Right Now</h2>
+                    <CountUp  className="whiteText activeUsers-BioThings"
+                                start={this.state.lastActiveUsers}
+                                end={this.state.activeUsers}
+                                duration={3}
+                                separator=","/>
+                  </div>
+                  <Chart className="col-sm-12 col-md-4 col-lg-4"/>
+                  <div className="col-sm-12 col-md-4 col-lg-4 text-center">
+                    <h3 className="text-muted whiteGlass">
+                      <CountUp  className="text-muted"
+                                start={0}
+                                end={this.state.totalSessions}
+                                duration={3}
+                                separator=","/>
+                    </h3>
+                    <h4 style={{color:'#b1b1b1'}}>
+                      Requests in the Last 30 Days
+                    </h4>
+                  </div>
+                </div>
+            </div>
+            <div id='charts' className='activeUsersBoxTest col-sm-12 col-md-12 col-lg-12' style={{display:'flex'}}>
+              <div id="chart_pages" style={{flex:1}}></div>
+              <div id="chart_actions" style={{flex:1}}></div>
+            </div>
+            <div id='charts' className='activeUsersBoxTest col-sm-12 col-md-12 col-lg-12'>
+              <Map/>
+            </div>
           </div>
-          <Chart chartData={this.state.activeUsersHistory}/>
         </div>
-        <br/>
-        <Map/>
-
       </section>
     );
   }
@@ -162,6 +322,14 @@ function mapDispatchToProps(dispatch) {
   return {
     sendMapData: (value)=>{
       const action = {type: "UPDATE-MAP", payload: value};
+      dispatch(action);
+    },
+    sendMap100Users: (value)=>{
+      const action = {type: "UPDATE-MAP-100", payload: value};
+      dispatch(action);
+    },
+    sendChartData: (value)=>{
+      const action = {type: "UPDATE-CHART", payload: value};
       dispatch(action);
     }
   }

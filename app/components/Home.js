@@ -87,9 +87,9 @@ class Home extends React.Component {
       self.handleKeyPressed(e.key);
     };
 
-    var timer =setInterval(function(){
-      self.rotateView();
-    }, 120000);
+    // var timer =setInterval(function(){
+    //   self.rotateView();
+    // }, 120000);
   }
 
   render() {

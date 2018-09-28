@@ -9,13 +9,15 @@ class ReactMap extends React.Component {
     super()
     this.state = {
       worlddata: [],
+      map100:[],
       cities: [],
-      hoverInfo:'Top 10 Users'
+      hoverInfo:'Where Are Our Users?'
     }
 
     this.handleCountryClick = this.handleCountryClick.bind(this)
     this.handleMarkerHover = this.handleMarkerHover.bind(this)
     this.colorMarker = this.colorMarker.bind(this)
+    this.colorMarker100 = this.colorMarker100.bind(this)
     this.sizeMarker = this.sizeMarker.bind(this)
     this.addComma = this.addComma.bind(this)
   }
@@ -33,15 +35,26 @@ class ReactMap extends React.Component {
       return '#f7f49c';
     }
   }
+  colorMarker100(users){
+    if ( users > 900000) {
+      return '#ff3e38';
+    }else if (users < 900000 && users > 400000 ) {
+      return '#fc943e';
+    }else if (users < 400000 && users > 100000 ) {
+      return '#ffde30';
+    }else{
+      return '#40c6ff';
+    }
+  }
   sizeMarker(users){
     if ( users > 900000) {
-      return 10;
-    }else if (users < 900000 && users > 400000 ) {
       return 8;
-    }else if (users < 400000 && users > 100000 ) {
+    }else if (users < 900000 && users > 400000 ) {
       return 6;
-    }else{
+    }else if (users < 400000 && users > 100000 ) {
       return 4;
+    }else{
+      return 3;
     }
   }
   projection() {
@@ -75,14 +88,21 @@ class ReactMap extends React.Component {
 
   render() {
     return (
-      <div className="flex" style={{width:'70%', margin:'auto'}}>
+      <div className="flex padding20" style={{ margin:'auto'}}>
         <div className="padding20" style={{flex:1}}>
           <table style={{margin:'auto'}} className='mapTable'>
+            <thead>
+              <tr>
+                <th className='text-light'>
+                  Top 10 Users
+                </th>
+              </tr>
+            </thead>
             <tbody>
               {this.props.mapData.map( (city,i)=>{
                 return (
-                  <tr key={i}>
-                    <td style={{padding:'5px 10px', borderRadius:'10px'}}>
+                  <tr key={i} >
+                    <td className="top10Row">
                       <span className={this.sizeMarker(city.users) > 7 ?'bold twoEM': 'bold'} style={{color: this.colorMarker(city.users), textShadow:'2px 2px black' }}>{ this.addComma(city.users) }</span>
                       <br/>
                       <b style={{fontSize:'10px'}} className="whiteText">{city.name}</b>
@@ -95,7 +115,7 @@ class ReactMap extends React.Component {
         </div>
         <div className="padding20" style={{flex:4}}>
           <h3 className="whiteText bold mapHoverInfo">{this.state.hoverInfo}</h3>
-          <svg className='mapBox' width={ 800 } height={ 450 } viewBox="0 0 800 450">
+          <svg className='mapBox' style={{background:'#323232'}} width={ 800 } height={ 450 } viewBox="0 0 800 450">
             <g className="countries">
               {
                 this.state.worlddata.map((d,i) => (
@@ -113,17 +133,18 @@ class ReactMap extends React.Component {
             </g>
             <g className="markers">
               {
-                this.props.mapData.map((city, i) => (
+                this.props.map100.map((city, i) => (
                   <circle
                     key={ `marker-${i}` }
                     cx={ this.projection()(city.coordinates)[0] }
                     cy={ this.projection()(city.coordinates)[1] }
                     r={ this.sizeMarker(city.users) }
-                    fill={ this.colorMarker(city.users) }
-                    stroke="#FFFFFF"
+                    fill={ this.colorMarker100(city.users) }
+                    stroke="none"
                     className="marker"
-                    onMouseEnter={ () => this.handleMarkerHover(i) }
-                    onMouseLeave={()=>{this.setState({'hoverInfo':'Top 10 Users'})}}
+                  //   onMouseEnter={ () => this.handleMarkerHover(i) }
+                  //   onMouseLeave={()=>{this.setState({'hoverInfo':'Top 10 Users'})}
+                  // }
                   />
                 ))
               }
@@ -137,7 +158,8 @@ class ReactMap extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    'mapData' : state.mapData
+    'mapData' : state.mapData,
+    'map100': state.mapData100
   }
 }
 

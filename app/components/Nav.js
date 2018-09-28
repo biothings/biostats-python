@@ -18,11 +18,13 @@ export default class Nav extends React.Component {
   render() {
     return (
       <header>
-        <nav className="header">
-          <Link className="logo" to="/">
+        <nav className="navbar navbar-dark bg-dark">
+          <Link className="logo text-light" to="/">
             BioStats
           </Link>
-
+          <span className="navbar-text text-muted">
+            BioThings Analytics & UpTime API
+          </span>
         </nav>
       </header>
     );

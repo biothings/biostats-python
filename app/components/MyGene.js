@@ -12,6 +12,8 @@ class MyGene extends React.Component {
   constructor(props) {
     super(props);
     this.state={
+        'top100usersURL': 'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDA8v-XCgw',
+        sessionsURL:'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgICAgICACgw',
         analyticsURL : 'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgICAmdKFCgw',
         realtimeURL:'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDAsbqFCgw',
         pagesURL: 'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgICAq_OHCgw',
@@ -25,6 +27,8 @@ class MyGene extends React.Component {
         activeUsersHistory:[],
         timer: null,
         devices:[],
+        totalSessions: 0,
+        'top100results': []
     }
     this.fetchAnalyticsData = this.fetchAnalyticsData.bind(this);
     this.fetchRealtimeUsers = this.fetchRealtimeUsers.bind(this);
@@ -33,6 +37,7 @@ class MyGene extends React.Component {
     this.getUniqueItemsInTopPages = this.getUniqueItemsInTopPages.bind(this);
     this.drawPages = this.drawPages.bind(this);
     this.drawActions = this.drawActions.bind(this);
+    this.fetchTop100 = this.fetchTop100.bind(this);
   }
 
   addComma(number){
@@ -88,7 +93,7 @@ class MyGene extends React.Component {
                 title: 'Endpoint'
               },
               'tooltip' : {
-                trigger: 'none'
+                isHtml: true
               }
             };
 
@@ -130,7 +135,7 @@ class MyGene extends React.Component {
                 title: 'Request'
               },
               'tooltip' : {
-                trigger: 'none'
+                isHtml: true
               }
             };
 
@@ -157,6 +162,17 @@ class MyGene extends React.Component {
       throw err;
     })
 
+    axios.get(self.state.sessionsURL).then(res=>{
+      // console.log('analytics', res.data);
+      let users = parseInt(res.data['totalsForAllResults']['ga:sessions']);
+      this.setState({
+        'totalSessions': users
+      })
+
+    }).catch(err=>{
+      throw err;
+    })
+
   }
 
   fetchRealtimeUsers(){
@@ -175,6 +191,33 @@ class MyGene extends React.Component {
     }).catch(err=>{
       throw err;
     })
+  }
+
+  fetchTop100(){
+    var self = this;
+    axios.get(self.state.top100usersURL).then(res=>{
+      this.setState({
+        'top100results': res.data
+      })
+      this.shape100Data();
+    }).catch(err=>{
+      throw err;
+    })
+  }
+
+  shape100Data(){
+    let res =[]
+    let arr = this.state.top100results.rows;
+    for (var i = 0; i < arr.length; i++) {
+      let long = parseFloat(arr[i][2]);
+      let lat = parseFloat(arr[i][1]);
+      let obj ={'name': arr[i][0],'coordinates':[long,lat],'users': arr[i][3] };
+      res.push(obj);
+    }
+    // this.setState({
+    //   'mapData': res
+    // });
+    this.props.sendMap100Users(res);
   }
 
   shapeMapData(){
@@ -198,6 +241,7 @@ class MyGene extends React.Component {
     var self = this;
     this.fetchAnalyticsData();
     this.fetchRealtimeUsers();
+    this.fetchTop100();
     this.drawPages();
     this.drawActions();
     this.timer =setInterval(function(){
@@ -216,30 +260,53 @@ class MyGene extends React.Component {
   render() {
     return (
       <section className="margin0Auto padding20 centerText mG-back">
-        <div style={{width:'100%', clear:'both'}}>
-          <img src="/static/img/mygene-text.png" width="300px" className="margin20"/>
-          <button style={{position:'absolute', right:'20px'}} className='btn btn-blue' onClick={this.fetchAnalyticsData}>Refresh</button>
-        </div>
-        <div className="activeUsersBoxTest margin20 flex" style={{width:'50%', margin:'auto'}}>
-          <div style={{flex:1}}>
-            <h2 className="whiteText">Active Users Right Now</h2>
-            <CountUp  className="whiteText activeUsers-MyGene"
-                        start={this.state.lastActiveUsers}
-                        end={this.state.activeUsers}
-                        duration={3}
-                        separator=","/>
+        <div className="container">
+          <div className="row">
+            <div className="col-sm-12 col-md-6 col-lg-6">
+              <img src="/static/img/mygene-text.png" width="300px" className="margin20"/>
+            </div>
+            <div className="col-sm-12 col-md-6 col-lg-6">
+              <p className="text-muted">
+                Anaylitic data displayed is collected from the last 30 days
+              </p>
+              {/* <a className="github-button" href="https://github.com/biothings/mygene.info/subscription" data-size="large" data-show-count="true" aria-label="Watch biothings/mygene.info on GitHub">Watch</a> */}
+              <button className='btn btn-outline-secondary' onClick={this.fetchAnalyticsData}>Refresh</button>
+            </div>
+            <div className="col-sm-12 col-md-12 col-lg-12">
+                <div className=" row activeUsersBoxTest">
+                  <div className="col-sm-12 col-md-4 col-lg-4">
+                    <h2 className="whiteText">Active Users Right Now</h2>
+                    <CountUp  className="whiteText activeUsers-MyGene"
+                                start={this.state.lastActiveUsers}
+                                end={this.state.activeUsers}
+                                duration={3}
+                                separator=","/>
+                  </div>
+                  <Chart className="col-sm-12 col-md-4 col-lg-4"/>
+                  <div className="col-sm-12 col-md-4 col-lg-4 text-center">
+                    <h3 className="text-muted whiteGlass">
+                      <CountUp  className="text-muted"
+                                start={0}
+                                end={this.state.totalSessions}
+                                duration={3}
+                                separator=","/>
+                    </h3>
+                    <h4 style={{color:'#b1b1b1'}}>
+                      Requests in the Last 30 Days
+                    </h4>
+                    <img src="/static/img/gene.gif" width="50px"/>
+                  </div>
+                </div>
+            </div>
+            <div id='charts' className='activeUsersBoxTest col-sm-12 col-md-12 col-lg-12' style={{display:'flex'}}>
+              <div id="chart_pages" style={{flex:1}}></div>
+              <div id="chart_actions" style={{flex:1}}></div>
+            </div>
+            <div id='charts' className='activeUsersBoxTest col-sm-12 col-md-12 col-lg-12'>
+              <Map/>
+            </div>
           </div>
-          <Chart/>
         </div>
-        <br/>
-
-        <div id='charts' style={{display:'flex'}}>
-          <div id="chart_pages" style={{flex:1}}></div>
-          <div id="chart_actions" style={{flex:1}}></div>
-        </div>
-        <br></br>
-        <Map/>
-
       </section>
     );
   }
@@ -256,6 +323,10 @@ function mapDispatchToProps(dispatch) {
   return {
     sendMapData: (value)=>{
       const action = {type: "UPDATE-MAP", payload: value};
+      dispatch(action);
+    },
+    sendMap100Users: (value)=>{
+      const action = {type: "UPDATE-MAP-100", payload: value};
       dispatch(action);
     },
     sendChartData: (value)=>{

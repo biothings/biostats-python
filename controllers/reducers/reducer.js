@@ -1,6 +1,7 @@
 let initalState ={
   mapData: [],
-  chartData: []
+  chartData: [],
+  mapData100:[]
 }
 
 const rootReducer = (state = initalState, action) => {
@@ -10,6 +11,9 @@ const rootReducer = (state = initalState, action) => {
       break;
     case "UPDATE-MAP":
       return Object.assign({}, state, { mapData: action.payload });
+      break;
+    case "UPDATE-MAP-100":
+      return Object.assign({}, state, { mapData100: action.payload });
       break;
     default:
       return state
