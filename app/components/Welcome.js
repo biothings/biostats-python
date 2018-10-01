@@ -32,10 +32,14 @@ class Welcome extends React.Component {
 
   render() {
     return (
-      <div style={{textAlign:'center',paddingTop:'100px'}}>
+      <div style={{textAlign:'center',paddingTop:'25vh'}}>
         {/* <img style={{width:'50vw'}} src='img/biostats.svg'></img> */}
-          <svg viewBox="0 0 1014 457" width='50vw'>
-            <polygon id="polymorph" className="st0" points="966.7,325.8 966.7,135.2 837,135.2 837,325.8 817.3,325.8 817.3,210.1 691.1,210.1
+          <svg viewBox="0 0 1014 457" width='50vw' style={{maxWidth:'900px'}}>
+            <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style={{stopColor:'rgb(255,255,0)',stopOpacity:1}} />
+              <stop offset="100%" style={{stopColor:'rgb(255,0,0)',stopOpacity:1}} />
+            </linearGradient>
+            <polygon fill="url(#grad1)" id="polymorph" className="st0" points="966.7,325.8 966.7,135.2 837,135.2 837,325.8 817.3,325.8 817.3,210.1 691.1,210.1
             	691.1,325.8 670.3,325.8 670.3,19 549.3,19 549.3,325.8 522.7,325.8 522.7,184.1 399.9,184.1 399.9,325.8 373.3,325.8 370.4,257.9
             	249.4,257.9 252.3,325.8 239,325.8 239,381.2 252.3,381.2 373.3,381.2 399.9,381.2 522.7,381.2 549.3,381.2 670.3,381.2
             	691.1,381.2 817.3,381.2 837,381.2 966.7,381.2 980,381.2 980,325.8 "/>
@@ -143,7 +147,7 @@ class Welcome extends React.Component {
             		h92.6l36.2,73H72.3L30,355z M163.1,425.4L127,352.3l36.6-77.6l43.6,75.1L163.1,425.4z"/>
             </g>
             </svg>
-            <h2 style={{color:'grey'}}>BioThings Realtime Analytics & Uptime API</h2>
+            <h2 className="text-light textShadow">BioThings Realtime Analytics & Uptime API</h2>
       </div>
     );
   }

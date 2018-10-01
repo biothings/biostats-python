@@ -1,3 +1,39 @@
+body {
+  background: url("/static/img/hero.jpeg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed; }
+
+.mapContainer {
+  margin-bottom: 70px !important; }
+
+.screwTopLeft {
+  position: absolute;
+  left: 15px;
+  top: 15px;
+  width: 15px; }
+
+.screwTopRight {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  width: 15px; }
+
+.screwBottomLeft {
+  position: absolute;
+  left: 15px;
+  bottom: 15px;
+  width: 15px; }
+
+.screwBottomRight {
+  position: absolute;
+  right: 15px;
+  bottom: 15px;
+  width: 15px; }
+
+.textShadow {
+  text-shadow: 1px 1px 2px #323232; }
+
 #charts div svg text {
   fill: white !important; }
 
@@ -9,7 +45,6 @@
   padding: 15px;
   border-radius: 15px;
   border: white 3px solid;
-  box-shadow: 6px 6px 25px black;
   /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#aebcbf+0,6e7774+50,0a0e0a+51,0a0809+100;Black+Gloss */
   background: #aebcbf;
   /* Old browsers */
@@ -26,7 +61,6 @@
   padding: 15px;
   border-radius: 15px;
   border: grey 3px solid;
-  box-shadow: 6px 6px 25px black;
   /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,f1f1f1+50,e1e1e1+51,f6f6f6+100;White+Gloss+%231 */
   background: white;
   /* Old browsers */
@@ -534,9 +568,6 @@ h1, h2, h3, h4, h5 {
 .device {
   color: white;
   display: inline-block; }
-
-.st0 {
-  fill: #4D4D4D; }
 
 .st1 {
   fill: #FFFFFF; }

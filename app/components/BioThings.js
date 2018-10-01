@@ -12,10 +12,14 @@ class BioThings extends React.Component {
   constructor(props) {
     super(props);
     this.state={
-        'top100usersURL':'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDA0_SPCQw',
+        'top100MG':'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDA8v-XCgw',
+        'top100MV':'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDAiuSOCgw',
+        'top100MC':'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDA0_SPCQw',
         sessionsURL:'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgICA2uOGCgw',
         analyticsURL : 'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgICAutGQCgw',
-        realtimeURL:'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDAyMWMCgw',
+        rtMG:'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDAsbqFCgw',
+        rtMV:'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgICgwteGCgw',
+        rtMC:'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDAyN6VCgw',
         pagesURL:'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDAk4eHCgw',
         actionsURL:'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgICAuqiOCgw',
         activeUsers: 0,
@@ -176,38 +180,80 @@ class BioThings extends React.Component {
   }
 
   fetchRealtimeUsers(){
-    axios.get(this.state.realtimeURL).then(response=>{
+    let usersTotal = 0;
+    let self = this;
+    axios.get(self.state.rtMG).then(response=>{
       let users = parseInt(response.data.totalsForAllResults['rt:activeUsers']);
-      this.setState({
-        activeUsers: users
+      usersTotal = usersTotal + users;
+      // --------------------------
+      axios.get(self.state.rtMV).then(response=>{
+        let users1 = parseInt(response.data.totalsForAllResults['rt:activeUsers']);
+        usersTotal = usersTotal + users1;
+        // --------------------------
+        axios.get(self.state.rtMC).then(response=>{
+          let users2 = parseInt(response.data.totalsForAllResults['rt:activeUsers']);
+          usersTotal = usersTotal + users2;
+          // --------------------------
+          self.setState({
+            activeUsers: usersTotal
+          });
+          // creates data for Chart, max length is 10
+          this.state.activeUsersHistory.push(users)
+          if (self.state.activeUsersHistory.length > 10) {
+            self.state.activeUsersHistory.shift();
+          }
+          self.props.sendChartData(self.state.activeUsersHistory);
+          // --------------------------
+        }).catch(err=>{
+          throw err;
+        });
+        // --------------------------
+      }).catch(err=>{
+        throw err;
       });
-      //creates data for Chart, max length is 10
-      this.state.activeUsersHistory.push(users)
-      if (this.state.activeUsersHistory.length > 10) {
-        this.state.activeUsersHistory.shift();
-      }
-      this.props.sendChartData(this.state.activeUsersHistory);
-
+      // --------------------------
     }).catch(err=>{
       throw err;
-    })
+    });
   }
+
+
 
   fetchTop100(){
     var self = this;
-    axios.get(self.state.top100usersURL).then(res=>{
-      this.setState({
-        'top100results': res.data
+    let total = [];
+    axios.get(self.state.top100MG).then(res=>{
+      total = total.concat(res.data.rows)
+      // ----------
+      axios.get(self.state.top100MV).then(res=>{
+        total = total.concat(res.data.rows)
+        // ----------
+        axios.get(self.state.top100MC).then(res=>{
+          total = total.concat(res.data.rows)
+          // ----------
+          self.setState({
+            'top100results': total
+          })
+          self.shape100Data();
+          // ----------
+        }).catch(err=>{
+          throw err;
+        })
+        // ----------
+      }).catch(err=>{
+        throw err;
       })
-      this.shape100Data();
+      // ----------
     }).catch(err=>{
       throw err;
     })
   }
 
+
+
   shape100Data(){
     let res =[]
-    let arr = this.state.top100results.rows;
+    let arr = this.state.top100results;
     for (var i = 0; i < arr.length; i++) {
       let long = parseFloat(arr[i][2]);
       let lat = parseFloat(arr[i][1]);
@@ -273,6 +319,10 @@ class BioThings extends React.Component {
               <button className='btn btn-outline-secondary' onClick={this.fetchAnalyticsData}>Refresh</button>
             </div>
             <div className="col-sm-12 col-md-12 col-lg-12">
+              <img src="/static/img/screw.png" className="screwTopRight"/>
+              <img src="/static/img/screw.png" className="screwTopLeft"/>
+              <img src="/static/img/screw.png" className="screwBottomRight"/>
+              <img src="/static/img/screw.png" className="screwBottomLeft"/>
                 <div className=" row activeUsersBoxTest">
                   <div className="col-sm-12 col-md-4 col-lg-4">
                     <h2 className="whiteText">Active Users Right Now</h2>
@@ -298,10 +348,18 @@ class BioThings extends React.Component {
                 </div>
             </div>
             <div id='charts' className='activeUsersBoxTest col-sm-12 col-md-12 col-lg-12' style={{display:'flex'}}>
+              <img src="/static/img/screw.png" className="screwTopRight"/>
+              <img src="/static/img/screw.png" className="screwTopLeft"/>
+              <img src="/static/img/screw.png" className="screwBottomRight"/>
+              <img src="/static/img/screw.png" className="screwBottomLeft"/>
               <div id="chart_pages" style={{flex:1}}></div>
               <div id="chart_actions" style={{flex:1}}></div>
             </div>
-            <div id='charts' className='activeUsersBoxTest col-sm-12 col-md-12 col-lg-12'>
+            <div className='activeUsersBoxTest col-sm-12 col-md-12 col-lg-12 mapContainer'>
+              <img src="/static/img/screw.png" className="screwTopRight"/>
+              <img src="/static/img/screw.png" className="screwTopLeft"/>
+              <img src="/static/img/screw.png" className="screwBottomRight"/>
+              <img src="/static/img/screw.png" className="screwBottomLeft"/>
               <Map/>
             </div>
           </div>

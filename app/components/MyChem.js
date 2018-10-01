@@ -273,6 +273,10 @@ class MyChem extends React.Component {
               <button className='btn btn-outline-secondary' onClick={this.fetchAnalyticsData}>Refresh</button>
             </div>
             <div className="col-sm-12 col-md-12 col-lg-12">
+              <img src="/static/img/screw.png" className="screwTopRight"/>
+              <img src="/static/img/screw.png" className="screwTopLeft"/>
+              <img src="/static/img/screw.png" className="screwBottomRight"/>
+              <img src="/static/img/screw.png" className="screwBottomLeft"/>
                 <div className=" row activeUsersBoxTest">
                   <div className="col-sm-12 col-md-4 col-lg-4">
                     <h2 className="whiteText">Active Users Right Now</h2>
@@ -299,10 +303,18 @@ class MyChem extends React.Component {
                 </div>
             </div>
             <div id='charts' className='activeUsersBoxTest col-sm-12 col-md-12 col-lg-12' style={{display:'flex'}}>
+              <img src="/static/img/screw.png" className="screwTopRight"/>
+              <img src="/static/img/screw.png" className="screwTopLeft"/>
+              <img src="/static/img/screw.png" className="screwBottomRight"/>
+              <img src="/static/img/screw.png" className="screwBottomLeft"/>
               <div id="chart_pages" style={{flex:1}}></div>
               <div id="chart_actions" style={{flex:1}}></div>
             </div>
-            <div id='charts' className='activeUsersBoxTest col-sm-12 col-md-12 col-lg-12'>
+            <div className='activeUsersBoxTest col-sm-12 col-md-12 col-lg-12 mapContainer'>
+              <img src="/static/img/screw.png" className="screwTopRight"/>
+              <img src="/static/img/screw.png" className="screwTopLeft"/>
+              <img src="/static/img/screw.png" className="screwBottomRight"/>
+              <img src="/static/img/screw.png" className="screwBottomLeft"/>
               <Map/>
             </div>
           </div>
