@@ -24,5 +24,5 @@ if __name__ == "__main__":
             "path": "./static/img"
         }),
     ], **settings)
-    app.listen(8000)
+    app.listen(7878)
     tornado.ioloop.IOLoop.current().start()
