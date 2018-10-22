@@ -95,18 +95,6 @@ class Home extends React.Component {
   render() {
     return (
       <section className="margin0Auto" >
-        {/* {!this.state.display &&
-          <nav className="navbar navbar-expand-lg navbar-light bg-light">
-              <div className="navbar-nav">
-                <Link onClick={()=>{this.handleKeyPressed('')}} className="bnav-item nav-link g-white" to='#'>Home</Link>
-                <Link onClick={()=>{this.handleKeyPressed('1')}} className="nav-item nav-link mG whiteText" style={{margin:'3px'}} to='#'>MyGene (key 1)</Link>
-                <Link onClick={()=>{this.handleKeyPressed('2')}} className="nav-item nav-link mV whiteText" style={{margin:'3px'}} to='#'>MyVariant (key 2)</Link>
-                <Link onClick={()=>{this.handleKeyPressed('3')}} className="nav-item nav-link mC whiteText" style={{margin:'3px'}} to='#'>MyChem (key 3)</Link>
-                <Link onClick={()=>{this.handleKeyPressed('4')}} className="nav-item nav-link mB whiteText" style={{margin:'3px'}} to='#'>BioThings (key 4)</Link>
-              </div>
-          </nav>
-        } */}
-
         {this.state.display === 'MyGene' && <MyGene/>}
         {this.state.display === 'MyVariant' && <MyVariant/>}
         {this.state.display === 'MyChem' && <MyChem/>}

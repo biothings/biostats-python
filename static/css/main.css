@@ -4,6 +4,9 @@ body {
   background-position: center;
   background-attachment: fixed; }
 
+h1, h2, h3, h4, h5 {
+  font-weight: 200 !important; }
+
 .mapContainer {
   margin-bottom: 70px !important; }
 
@@ -217,6 +220,12 @@ body {
   background-image: -o-linear-gradient(#213542, #3366CC);
   min-height: 100vh; }
 
+.mG-back2 {
+  background-image: url("/static/img/mgback-01.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center; }
+
 .mV-back {
   background: #213542;
   /* Old browsers */
@@ -228,6 +237,12 @@ body {
   /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
   background-image: -o-linear-gradient(#213542, #40B307);
   min-height: 100vh; }
+
+.mV-back2 {
+  background-image: url("/static/img/mvback-01.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center; }
 
 .mC-back {
   background: #213542;
@@ -241,6 +256,12 @@ body {
   background-image: -o-linear-gradient(#213542, #FD7400);
   min-height: 100vh; }
 
+.mC-back2 {
+  background-image: url("/static/img/mcback-01.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center; }
+
 .mB-back {
   background: #213542;
   /* Old browsers */
@@ -252,6 +273,12 @@ body {
   /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
   background-image: -o-linear-gradient(#213542, #CE952B);
   min-height: 100vh; }
+
+.mB-back2 {
+  background-image: url("/static/img/btback-01.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center; }
 
 .mG {
   background: #3366CC; }

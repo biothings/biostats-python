@@ -305,7 +305,7 @@ class BioThings extends React.Component {
 
   render() {
     return (
-      <section className="margin0Auto padding20 centerText mB-back">
+      <section className="margin0Auto padding20 centerText mB-back2">
         <div className="container">
           <div className="row">
             <div className="col-sm-12 col-md-6 col-lg-6">
