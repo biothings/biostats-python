@@ -12,6 +12,7 @@ class ChartComp extends React.Component {
 
     this.drawChart = this.drawChart.bind(this)
     this.getRandomColor = this.getRandomColor.bind(this)
+    this.getColor = this.getColor.bind(this)
   }
 
   getRandomColor() {
@@ -21,6 +22,25 @@ class ChartComp extends React.Component {
           color += letters[Math.floor(Math.random() * 16)];
       }
       return color;
+  }
+
+  getColor() {
+      switch (this.props.panel) {
+        case 'MyGene':
+          return '#3366CC';
+          break;
+          case 'MyChem':
+            return '#FD7400';
+            break;
+            case 'MyVariant':
+              return '#40B307';
+              break;
+              case 'BioThings':
+                return '#FCCA52';
+                break;
+        default:
+          return 'white;'
+      }
   }
 
 
@@ -35,12 +55,17 @@ class ChartComp extends React.Component {
             datasets: [{
                 data: this.props.chartData,
                 label: "Active Users",
-                backgroundColor: this.getRandomColor(),
-                highlightFill:this.getRandomColor()
+                // backgroundColor: this.getRandomColor(),
+                // highlightFill:this.getRandomColor()
+                backgroundColor: this.getColor(),
+                highlightFill:'white'
               }
             ]
           },
           options: {
+            maintainAspectRatio: false,
+            events: ['click'],
+            animation: false,
             responsive: true,
             mode: null,
             legend: {

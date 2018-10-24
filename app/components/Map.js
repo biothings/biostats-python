@@ -43,7 +43,11 @@ class ReactMap extends React.Component {
     }else if (users < 400000 && users > 100000 ) {
       return '#ffde30';
     }else{
-      return '#40c6ff';
+      if (this.props.color) {
+        return this.props.color
+      }else{
+        return '#40c6ff';
+      }    
     }
   }
   sizeMarker(users){
@@ -103,6 +107,9 @@ class ReactMap extends React.Component {
                 return (
                   <tr key={i} >
                     <td className="top10Row">
+                      {city.api === 'MyGene' && <span className="badge mG text-light scaleHalf">MG</span>}
+                      {city.api === 'MyVariant' && <span className="badge mV text-light scaleHalf">MV</span>}
+                      {city.api === 'MyChem' && <span className="badge mC text-light scaleHalf">MV</span>}
                       <span className={this.sizeMarker(city.users) > 7 ?'bold twoEM': 'bold'} style={{color: this.colorMarker(city.users), textShadow:'2px 2px black' }}>{ this.addComma(city.users) }</span>
                       <br/>
                       <b style={{fontSize:'10px'}} className="whiteText">{city.name}</b>
@@ -114,8 +121,7 @@ class ReactMap extends React.Component {
           </table>
         </div>
         <div className="padding20" style={{flex:4}}>
-          <h3 className="whiteText bold mapHoverInfo">{this.state.hoverInfo}</h3>
-          <svg className='mapBox' style={{background:'#323232'}} width={ 800 } height={ 450 } viewBox="0 0 800 450">
+          <svg className='mapBox' style={{background:'#323232','width':'100%'}} width={ 800 } height={ 450 } viewBox="0 0 800 450">
             <g className="countries">
               {
                 this.state.worlddata.map((d,i) => (
@@ -142,14 +148,12 @@ class ReactMap extends React.Component {
                     fill={ this.colorMarker100(city.users) }
                     stroke="none"
                     className="marker"
-                  //   onMouseEnter={ () => this.handleMarkerHover(i) }
-                  //   onMouseLeave={()=>{this.setState({'hoverInfo':'Top 10 Users'})}
-                  // }
                   />
                 ))
               }
             </g>
           </svg>
+          <h3 className="whiteText bold mapHoverInfo">{this.state.hoverInfo}</h3>
         </div>
       </div>
     )

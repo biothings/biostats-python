@@ -5,6 +5,7 @@ import axios from 'axios';
 import CountUp from 'react-countup';
 import Chart from './Chart';
 import Map from './Map';
+import _ from 'lodash';
 
 
 class BioThings extends React.Component {
@@ -119,7 +120,7 @@ class BioThings extends React.Component {
         res.push([arr[i][0],parseFloat(arr[i][1])]);
       }
 
-      // console.log('final arr', res)
+      // className.log('final arr', res)
 
       google.charts.load('current', {packages: ['corechart', 'bar']});
       google.charts.setOnLoadCallback(drawBasic);
@@ -166,22 +167,25 @@ class BioThings extends React.Component {
       throw err;
     })
 
-    axios.get(self.state.sessionsURL).then(res=>{
-      // console.log('analytics', res.data);
-      let users = parseInt(res.data['totalsForAllResults']['ga:sessions']);
-      this.setState({
-        'totalSessions': users
-      })
-
-    }).catch(err=>{
-      throw err;
+    // axios.get(self.state.sessionsURL).then(res=>{
+    //   let users = parseInt(res.data['totalsForAllResults']['ga:sessions']);
+    //   this.setState({
+    //     'totalSessions': users
+    //   })
+    //
+    // }).catch(err=>{
+    //   throw err;
+    // })
+    let total = this.props.mgReq + this.props.mcReq + this.props.mvReq;
+    this.setState({
+      'totalSessions': total
     })
 
   }
 
   fetchRealtimeUsers(){
-    let usersTotal = 0;
     let self = this;
+    let usersTotal = 0;
     axios.get(self.state.rtMG).then(response=>{
       let users = parseInt(response.data.totalsForAllResults['rt:activeUsers']);
       usersTotal = usersTotal + users;
@@ -231,6 +235,7 @@ class BioThings extends React.Component {
         axios.get(self.state.top100MC).then(res=>{
           total = total.concat(res.data.rows)
           // ----------
+          // console.log('should be 300', total.length)
           self.setState({
             'top100results': total
           })
@@ -268,13 +273,14 @@ class BioThings extends React.Component {
 
   shapeMapData(){
     let res =[]
-    let arr = this.state.results.rows;
-    for (var i = 0; i < arr.length; i++) {
-      let long = parseFloat(arr[i][5]);
-      let lat = parseFloat(arr[i][4]);
-      let obj ={'name': arr[i][2]+', '+arr[i][3],'coordinates':[lat,long],'users': arr[i][7] };
-      res.push(obj);
-    }
+
+    res = this.props.mgMap.concat(this.props.mcMap).concat(this.props.mvMap);
+    res = _.sortBy(res, ['users'],['asc']);
+    res = res.slice(0,10);
+    res = _.sortBy(res,function (obj) {
+        return parseInt(obj.users, 10);
+    });
+    res = res.reverse();
     this.setState({
       'mapData': res
     });
@@ -288,8 +294,8 @@ class BioThings extends React.Component {
     this.fetchAnalyticsData();
     this.fetchRealtimeUsers();
     this.fetchTop100();
-    this.drawPages();
-    this.drawActions();
+    // this.drawPages();
+    // this.drawActions();
     this.timer =setInterval(function(){
       self.setState({
         lastActiveUsers: self.state.activeUsers
@@ -308,16 +314,6 @@ class BioThings extends React.Component {
       <section className="margin0Auto padding20 centerText mB-back2">
         <div className="container">
           <div className="row">
-            <div className="col-sm-12 col-md-6 col-lg-6">
-              <img src="/static/img/biothings-text.png" width="300px" className="margin20"/>
-            </div>
-            <div className="col-sm-12 col-md-6 col-lg-6">
-              <p className="text-muted">
-                Anaylitic data displayed is collected from the last 30 days
-              </p>
-              {/* <a className="github-button" href="https://github.com/biothings/mygene.info/subscription" data-size="large" data-show-count="true" aria-label="Watch biothings/mygene.info on GitHub">Watch</a> */}
-              <button className='btn btn-outline-secondary' onClick={this.fetchAnalyticsData}>Refresh</button>
-            </div>
             <div className="col-sm-12 col-md-12 col-lg-12">
               <img src="/static/img/screw.png" className="screwTopRight"/>
               <img src="/static/img/screw.png" className="screwTopLeft"/>
@@ -325,42 +321,44 @@ class BioThings extends React.Component {
               <img src="/static/img/screw.png" className="screwBottomLeft"/>
                 <div className=" row activeUsersBoxTest">
                   <div className="col-sm-12 col-md-4 col-lg-4">
-                    <h2 className="whiteText">Active Users Right Now</h2>
+                    <img src="/static/img/biothings-text.png" width="300px" className="margin20 dropShadow"/>
+                    <h4 className="whiteText">Active Users Right Now</h4>
                     <CountUp  className="whiteText activeUsers-BioThings"
                                 start={this.state.lastActiveUsers}
                                 end={this.state.activeUsers}
                                 duration={3}
                                 separator=","/>
                   </div>
-                  <Chart className="col-sm-12 col-md-4 col-lg-4"/>
+                  <Chart panel="BioThings" className="col-sm-12 col-md-4 col-lg-4"/>
                   <div className="col-sm-12 col-md-4 col-lg-4 text-center">
-                    <h3 className="text-muted whiteGlass">
+                    <button style={{'marginBottom':'10px'}}  className='btn btn-outline-dark refreshBtn' onClick={this.fetchAnalyticsData}>Refresh</button>
+                    <h1 className="text-muted whiteGlass font-weight-bold">
                       <CountUp  className="text-muted"
                                 start={0}
                                 end={this.state.totalSessions}
                                 duration={3}
                                 separator=","/>
-                    </h3>
+                    </h1>
                     <h4 style={{color:'#b1b1b1'}}>
                       Requests in the Last 30 Days
                     </h4>
                   </div>
                 </div>
             </div>
-            <div id='charts' className='activeUsersBoxTest col-sm-12 col-md-12 col-lg-12' style={{display:'flex'}}>
+            {/* <div id='charts' className='activeUsersBoxTest col-sm-12 col-md-12 col-lg-12' style={{display:'flex'}}>
               <img src="/static/img/screw.png" className="screwTopRight"/>
               <img src="/static/img/screw.png" className="screwTopLeft"/>
               <img src="/static/img/screw.png" className="screwBottomRight"/>
               <img src="/static/img/screw.png" className="screwBottomLeft"/>
               <div id="chart_pages" style={{flex:1}}></div>
               <div id="chart_actions" style={{flex:1}}></div>
-            </div>
+            </div> */}
             <div className='activeUsersBoxTest col-sm-12 col-md-12 col-lg-12 mapContainer'>
               <img src="/static/img/screw.png" className="screwTopRight"/>
               <img src="/static/img/screw.png" className="screwTopLeft"/>
               <img src="/static/img/screw.png" className="screwBottomRight"/>
               <img src="/static/img/screw.png" className="screwBottomLeft"/>
-              <Map/>
+              <Map color='#FCCA52'/>
             </div>
           </div>
         </div>
@@ -372,7 +370,16 @@ class BioThings extends React.Component {
 function mapStateToProps(state) {
   return {
     //will make the user object from redux store available as props.user to this component
-    user : state.user
+    user : state.user,
+    mgHistory: state.mgHistory,
+    mcHistory: state.mcHistory,
+    mvHistory: state.mvHistory,
+    mgReq : state.mgReq,
+    mcReq : state.mcReq,
+    mvReq : state.mvReq,
+    mgMap : state.mgMap,
+    mcMap : state.mcMap,
+    mvMap : state.mvMap,
   }
 }
 

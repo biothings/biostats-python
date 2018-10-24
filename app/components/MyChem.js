@@ -83,6 +83,7 @@ class MyChem extends React.Component {
             var data = google.visualization.arrayToDataTable(res);
 
             var options = {
+              legend: {position: 'none'},
               title: 'Top 5 Endpoints',
               chartArea: {width: '50%'},
               hAxis: {
@@ -125,6 +126,7 @@ class MyChem extends React.Component {
             var data = google.visualization.arrayToDataTable(res);
 
             var options = {
+              legend: {position: 'none'},
               title: 'Top 5 Requests',
               chartArea: {width: '50%'},
               hAxis: {
@@ -165,6 +167,7 @@ class MyChem extends React.Component {
     axios.get(self.state.sessionsURL).then(res=>{
       // console.log('analytics', res.data);
       let users = parseInt(res.data['totalsForAllResults']['ga:sessions']);
+      this.props.pushReqData(users);
       this.setState({
         'totalSessions': users
       })
@@ -186,7 +189,8 @@ class MyChem extends React.Component {
       if (this.state.activeUsersHistory.length > 10) {
         this.state.activeUsersHistory.shift();
       }
-      this.props.sendChartData(this.state.activeUsersHistory);
+      this.props.updateHistory(users);
+      this.props.sendChartData(this.props.mcHistory);
 
     }).catch(err=>{
       throw err;
@@ -226,13 +230,14 @@ class MyChem extends React.Component {
     for (var i = 0; i < arr.length; i++) {
       let long = parseFloat(arr[i][5]);
       let lat = parseFloat(arr[i][4]);
-      let obj ={'name': arr[i][2]+', '+arr[i][3],'coordinates':[lat,long],'users': arr[i][7] };
+      let obj ={'api':'MyChem','name': arr[i][2]+', '+arr[i][3],'coordinates':[lat,long],'users': arr[i][7] };
       res.push(obj);
     }
     this.setState({
       'mapData': res
     });
     this.props.sendMapData(this.state.mapData);
+    this.props.pushMapData(this.state.mapData);
   }
 
 
@@ -262,16 +267,6 @@ class MyChem extends React.Component {
       <section className="margin0Auto padding20 centerText mC-back2">
         <div className="container">
           <div className="row">
-            <div className="col-sm-12 col-md-6 col-lg-6">
-              <img src="/static/img/mychem-text.png" width="300px" className="margin20"/>
-            </div>
-            <div className="col-sm-12 col-md-6 col-lg-6">
-              <p className="text-muted">
-                Anaylitic data displayed is collected from the last 30 days
-              </p>
-              {/* <a className="github-button" href="https://github.com/biothings/mygene.info/subscription" data-size="large" data-show-count="true" aria-label="Watch biothings/mygene.info on GitHub">Watch</a> */}
-              <button className='btn btn-outline-secondary' onClick={this.fetchAnalyticsData}>Refresh</button>
-            </div>
             <div className="col-sm-12 col-md-12 col-lg-12">
               <img src="/static/img/screw.png" className="screwTopRight"/>
               <img src="/static/img/screw.png" className="screwTopLeft"/>
@@ -279,7 +274,8 @@ class MyChem extends React.Component {
               <img src="/static/img/screw.png" className="screwBottomLeft"/>
                 <div className=" row activeUsersBoxTest">
                   <div className="col-sm-12 col-md-4 col-lg-4">
-                    <h2 className="whiteText">Active Users Right Now</h2>
+                    <img src="/static/img/mychem-text.png" width="300px" className="margin20 dropShadow"/>
+                    <h4 className="whiteText">Active Users Right Now</h4>
                     <CountUp  className="whiteText activeUsers-MyChem"
                                 start={this.state.lastActiveUsers}
                                 end={this.state.activeUsers}
@@ -288,17 +284,17 @@ class MyChem extends React.Component {
                   </div>
                   <Chart className="col-sm-12 col-md-4 col-lg-4"/>
                   <div className="col-sm-12 col-md-4 col-lg-4 text-center">
-                    <h3 className="text-muted whiteGlass">
+                    <h1 className="text-muted whiteGlass">
+                      <button style={{'marginBottom':'10px'}} className='btn btn-outline-dark refreshBtn' onClick={this.fetchAnalyticsData}>Refresh</button>
                       <CountUp  className="text-muted"
                                 start={0}
                                 end={this.state.totalSessions}
                                 duration={3}
                                 separator=","/>
-                    </h3>
+                    </h1>
                     <h4 style={{color:'#b1b1b1'}}>
                       Requests in the Last 30 Days
                     </h4>
-                    <img src="/static/img/chem.gif" width="50px"/>
                   </div>
                 </div>
             </div>
@@ -315,7 +311,7 @@ class MyChem extends React.Component {
               <img src="/static/img/screw.png" className="screwTopLeft"/>
               <img src="/static/img/screw.png" className="screwBottomRight"/>
               <img src="/static/img/screw.png" className="screwBottomLeft"/>
-              <Map/>
+              <Map color='#ff9c4b' api='MC'/>
             </div>
           </div>
         </div>
@@ -327,7 +323,8 @@ class MyChem extends React.Component {
 function mapStateToProps(state) {
   return {
     //will make the user object from redux store available as props.user to this component
-    user : state.user
+    user : state.user,
+    mcHistory: state.mcHistory
   }
 }
 
@@ -343,6 +340,18 @@ function mapDispatchToProps(dispatch) {
     },
     sendChartData: (value)=>{
       const action = {type: "UPDATE-CHART", payload: value};
+      dispatch(action);
+    },
+    updateHistory: (value)=>{
+      const action = {type: "PUSH-TO-MCHISTORY", payload: value};
+      dispatch(action);
+    },
+    pushReqData: (value)=>{
+      const action = {type: "MC-REQUESTS", payload: value};
+      dispatch(action);
+    },
+    pushMapData: (value)=>{
+      const action = {type: "MC-MAP", payload: value};
       dispatch(action);
     }
   }

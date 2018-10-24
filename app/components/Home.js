@@ -16,7 +16,7 @@ class Home extends React.Component {
       test: 'new value',
       apiRes: '',
       display: '',
-      views:['MyGene','MyVariant','MyChem','BioThings'],
+      views:['MyGene','MyVariant','BioThings'],
       startingViewIndex: 0
     }
     this.testApi = this.testApi.bind(this);
@@ -61,12 +61,12 @@ class Home extends React.Component {
             display: 'MyVariant'
           })
         break;
+      // case '3':
+      //     this.setState({
+      //       display: 'MyChem'
+      //     })
+      //   break;
       case '3':
-          this.setState({
-            display: 'MyChem'
-          })
-        break;
-      case '4':
           this.setState({
             display: 'BioThings'
           })
@@ -76,20 +76,24 @@ class Home extends React.Component {
           display: ''
         })
     }
-    // console.log(this.state.display)
   }
 
   componentDidMount(){
     var self = this;
     document.onkeypress = function (e) {
       e = e || window.event;
-      // console.log('Key Pressed', e.key);
       self.handleKeyPressed(e.key);
     };
 
+    setTimeout(function(){
+      self.setState({
+        display: 'MyGene'
+      })
+    },5000);
+
     var timer =setInterval(function(){
       self.rotateView();
-    }, 600000);
+    }, 300000);
   }
 
   render() {

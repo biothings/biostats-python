@@ -10,6 +10,10 @@ $light-grey: #f1f1f1;
 $light-grey2: #ddd;
 $blue: #2395cd;
 
+html{
+  background: #414141;
+}
+
 body{
   background: url('/static/img/hero.jpeg');
   background-size: cover;
@@ -17,8 +21,21 @@ body{
   background-attachment: fixed;
 }
 
+.scaleHalf{
+  transform: scale(.5);
+}
+
 h1,h2,h3,h4,h5{
   font-weight: 200 !important;
+}
+
+.dropShadow{
+  -webkit-filter: drop-shadow(2px 2px 2px black ) !important;
+	filter: drop-shadow(2px 2px 2px black) !important;
+}
+
+.refreshBtn{
+  transform: scale(.7);
 }
 
 .mapContainer{
@@ -55,6 +72,10 @@ h1,h2,h3,h4,h5{
 
 .textShadow{
   text-shadow: 1px 1px 2px #323232;
+}
+
+.no-decoration{
+  text-decoration: none !important;
 }
 
 //Google charts
@@ -199,6 +220,7 @@ $percent-color2:3%;
 
 .mapHoverInfo{
   padding: 10px;
+  margin-top: 5px;
   border-radius: 10px;
   background: #323232;
   border: 2px solid #555555;
@@ -594,8 +616,6 @@ h1,h2,h3,h4,h5{
   background: #414141;
   padding: 10px;
   text-align: center;
-  position: fixed;
-  bottom: 0;
   width: 100vw;
   p{
     color: #797979;
@@ -612,17 +632,16 @@ h1,h2,h3,h4,h5{
   display: inline-block;
 }
 
-.st0{
-  // fill:#4D4D4D;
-}
-.st1{fill:#FFFFFF;}
-.st2{fill:#D3D3D3;}
-.st3{fill:#F15A24;}
-.st4{fill:#C1272D;}
-.st5{fill:#F7931E;}
-.st6{fill:#FBB03B;}
-.st7{fill:#ED1C24;}
-.st8{fill:#333333;}
+// intro svg styles
+.st0{fill:#D3D3D3;}
+.st1{fill:#F15A24;}
+.st2{fill:#C1272D;}
+.st3{fill:#F7931E;}
+.st4{fill:#FBB03B;}
+.st5{fill:#ED1C24;}
+.st6{fill:#333333;}
+.st7{fill:#F2F2F2;}
+.st8{fill:#CCCCCC;}
 
 .users-gradient{
   width: 50%;
