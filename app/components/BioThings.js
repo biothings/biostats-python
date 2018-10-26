@@ -202,11 +202,12 @@ class BioThings extends React.Component {
             activeUsers: usersTotal
           });
           // creates data for Chart, max length is 10
-          this.state.activeUsersHistory.push(users)
+          self.state.activeUsersHistory.push(users)
           if (self.state.activeUsersHistory.length > 10) {
             self.state.activeUsersHistory.shift();
           }
-          self.props.sendChartData(self.state.activeUsersHistory);
+          self.props.updateHistory(usersTotal);
+          self.props.sendChartData(self.props.btHistory);
           // --------------------------
         }).catch(err=>{
           throw err;
@@ -275,12 +276,11 @@ class BioThings extends React.Component {
     let res =[]
 
     res = this.props.mgMap.concat(this.props.mcMap).concat(this.props.mvMap);
-    res = _.sortBy(res, ['users'],['asc']);
-    res = res.slice(0,10);
     res = _.sortBy(res,function (obj) {
         return parseInt(obj.users, 10);
     });
     res = res.reverse();
+    res = res.slice(0,10);
     this.setState({
       'mapData': res
     });
@@ -374,6 +374,7 @@ function mapStateToProps(state) {
     mgHistory: state.mgHistory,
     mcHistory: state.mcHistory,
     mvHistory: state.mvHistory,
+    btHistory: state.btHistory,
     mgReq : state.mgReq,
     mcReq : state.mcReq,
     mvReq : state.mvReq,
@@ -396,7 +397,11 @@ function mapDispatchToProps(dispatch) {
     sendChartData: (value)=>{
       const action = {type: "UPDATE-CHART", payload: value};
       dispatch(action);
-    }
+    },
+    updateHistory: (value)=>{
+      const action = {type: "PUSH-TO-BTHISTORY", payload: value};
+      dispatch(action);
+    },
   }
 }
 

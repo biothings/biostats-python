@@ -51,7 +51,7 @@ class ChartComp extends React.Component {
     var myLineChart = new Chart(document.getElementById("line-chart"), {
           type: 'bar',
           data: {
-            labels: this.props.chartData,
+            labels: ['now','2mins','3mins','4mins','5mins'],
             datasets: [{
                 data: this.props.chartData,
                 label: "Active Users",
