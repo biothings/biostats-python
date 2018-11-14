@@ -31,15 +31,15 @@ class MyVariant extends React.Component {
     this.fetchAnalyticsData = this.fetchAnalyticsData.bind(this);
     this.fetchRealtimeUsers = this.fetchRealtimeUsers.bind(this);
     this.shapeMapData = this.shapeMapData.bind(this);
-    this.addComma = this.addComma.bind(this);
+    // this.addComma = this.addComma.bind(this);
     this.getUniqueItemsInTopPages = this.getUniqueItemsInTopPages.bind(this);
     this.drawPages = this.drawPages.bind(this);
     this.drawActions = this.drawActions.bind(this);
   }
 
-  addComma(number){
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
+  // addComma(number){
+  //   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  // }
 
 
   getUniqueItemsInTopPages(list){
