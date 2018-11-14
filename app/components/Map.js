@@ -24,7 +24,7 @@ class ReactMap extends React.Component {
     this.classMarker = this.classMarker.bind(this)
   }
   addComma(number){
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return number.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
   colorMarker(users){
     if ( users > 900000) {
