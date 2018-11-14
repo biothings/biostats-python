@@ -260,7 +260,7 @@ class MyGene extends React.Component {
                   </div>
                 </div>
             </div>
-            <div id='charts' className='activeUsersBoxTest col-sm-12 col-md-12 col-lg-12' style={{display:'flex', padding:5}}>
+            <div id='charts' className='activeUsersBoxTest col-sm-12 col-md-12 col-lg-12' style={{display:'flex', flexWrap:'wrap'}}>
               <img src="/static/img/screw.png" className="screwTopRight"/>
               <img src="/static/img/screw.png" className="screwTopLeft"/>
               <img src="/static/img/screw.png" className="screwBottomRight"/>
