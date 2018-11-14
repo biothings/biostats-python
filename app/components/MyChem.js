@@ -12,7 +12,6 @@ class MyChem extends React.Component {
   constructor(props) {
     super(props);
     this.state={
-        'top100usersURL':'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDA0_SPCgw',
         sessionsURL:'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgICA2uOGCgw',
         analyticsURL : 'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgICggemUCgw',
         realtimeURL:'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDAyN6VCgw',
@@ -28,7 +27,6 @@ class MyChem extends React.Component {
         timer: null,
         devices:[],
         totalSessions: 0,
-        'top100results': []
     }
     this.fetchAnalyticsData = this.fetchAnalyticsData.bind(this);
     this.fetchRealtimeUsers = this.fetchRealtimeUsers.bind(this);
@@ -37,7 +35,6 @@ class MyChem extends React.Component {
     this.getUniqueItemsInTopPages = this.getUniqueItemsInTopPages.bind(this);
     this.drawPages = this.drawPages.bind(this);
     this.drawActions = this.drawActions.bind(this);
-    this.fetchTop100 = this.fetchTop100.bind(this);
   }
 
   addComma(number){
@@ -197,40 +194,14 @@ class MyChem extends React.Component {
     })
   }
 
-  fetchTop100(){
-    var self = this;
-    axios.get(self.state.top100usersURL).then(res=>{
-      this.setState({
-        'top100results': res.data
-      })
-      this.shape100Data();
-    }).catch(err=>{
-      throw err;
-    })
-  }
-
-  shape100Data(){
-    let res =[]
-    let arr = this.state.top100results.rows;
-    for (var i = 0; i < arr.length; i++) {
-      let long = parseFloat(arr[i][2]);
-      let lat = parseFloat(arr[i][1]);
-      let obj ={'name': arr[i][0],'coordinates':[long,lat],'users': arr[i][3] };
-      res.push(obj);
-    }
-    // this.setState({
-    //   'mapData': res
-    // });
-    this.props.sendMap100Users(res);
-  }
 
   shapeMapData(){
     let res =[]
     let arr = this.state.results.rows;
     for (var i = 0; i < arr.length; i++) {
-      let long = parseFloat(arr[i][5]);
-      let lat = parseFloat(arr[i][4]);
-      let obj ={'api':'MyChem','name': arr[i][2]+', '+arr[i][3],'coordinates':[lat,long],'users': arr[i][7] };
+      let long = parseFloat(arr[i][2]);
+      let lat = parseFloat(arr[i][3]);
+      let obj ={'api':'MyChem','name': arr[i][1]+', '+arr[i][0],'coordinates':[lat,long],'users': arr[i][4] };
       res.push(obj);
     }
     this.setState({
@@ -246,7 +217,6 @@ class MyChem extends React.Component {
     var self = this;
     this.fetchAnalyticsData();
     this.fetchRealtimeUsers();
-    this.fetchTop100();
     this.drawPages();
     this.drawActions();
     this.timer =setInterval(function(){
@@ -292,9 +262,9 @@ class MyChem extends React.Component {
                                 duration={3}
                                 separator=","/>
                     </h1>
-                    <h4 style={{color:'#b1b1b1'}}>
+                    <h5 style={{color:'#b1b1b1'}}>
                       Requests in the Last 30 Days
-                    </h4>
+                    </h5>
                   </div>
                 </div>
             </div>

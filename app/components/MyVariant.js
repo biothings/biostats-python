@@ -12,9 +12,8 @@ class MyVariant extends React.Component {
   constructor(props) {
     super(props);
     this.state={
-        'top100usersURL':'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDAiuSOCgw',
         sessionsURL:'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgICA-MKECgw',
-        analyticsURL : 'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDA05CWCQw',
+        analyticsURL : '	https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDA05CWCQw',
         realtimeURL:'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgICgwteGCgw',
         pagesURL:'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDAk4eHCgw',
         actionsURL:'https://gasuperproxy-1470690417190.appspot.com/query?id=ahxzfmdhc3VwZXJwcm94eS0xNDcwNjkwNDE3MTkwchULEghBcGlRdWVyeRiAgIDA05CWCgw',
@@ -28,7 +27,6 @@ class MyVariant extends React.Component {
         timer: null,
         devices:[],
         totalSessions: 0,
-        'top100results': []
     }
     this.fetchAnalyticsData = this.fetchAnalyticsData.bind(this);
     this.fetchRealtimeUsers = this.fetchRealtimeUsers.bind(this);
@@ -37,7 +35,6 @@ class MyVariant extends React.Component {
     this.getUniqueItemsInTopPages = this.getUniqueItemsInTopPages.bind(this);
     this.drawPages = this.drawPages.bind(this);
     this.drawActions = this.drawActions.bind(this);
-    this.fetchTop100 = this.fetchTop100.bind(this);
   }
 
   addComma(number){
@@ -67,13 +64,10 @@ class MyVariant extends React.Component {
     axios.get(this.state.pagesURL).then(response=>{
       let res =[];
       let arr = response.data.rows;
-      // console.log('pie res',response.data)
       res.push(['Endpoint', 'Sessions']);
       for (var i = 0; i < arr.length; i++) {
         res.push([arr[i][0],parseFloat(arr[i][1])]);
       }
-
-      // console.log('final arr', res)
 
       google.charts.load('current', {packages: ['corechart', 'bar']});
       google.charts.setOnLoadCallback(drawBasic);
@@ -110,13 +104,10 @@ class MyVariant extends React.Component {
     axios.get(this.state.actionsURL).then(response=>{
       let res =[];
       let arr = response.data.rows;
-      // console.log('pie res',response.data)
       res.push(['Action', 'Sessions']);
       for (var i = 0; i < arr.length; i++) {
         res.push([arr[i][0],parseFloat(arr[i][1])]);
       }
-
-      // console.log('final arr', res)
 
       google.charts.load('current', {packages: ['corechart', 'bar']});
       google.charts.setOnLoadCallback(drawBasic);
@@ -153,7 +144,6 @@ class MyVariant extends React.Component {
   fetchAnalyticsData(){
     var self = this;
     axios.get(self.state.analyticsURL).then(res=>{
-      // console.log('analytics', res.data);
       this.setState({
         'results': res.data
       })
@@ -165,7 +155,6 @@ class MyVariant extends React.Component {
     })
 
     axios.get(self.state.sessionsURL).then(res=>{
-      // console.log('analytics', res.data);
       let users = parseInt(res.data['totalsForAllResults']['ga:sessions']);
       this.props.pushReqData(users);
       this.setState({
@@ -184,12 +173,10 @@ class MyVariant extends React.Component {
       this.setState({
         activeUsers: users
       });
-      //creates data for Chart, max length is 10
       this.state.activeUsersHistory.push(users)
       if (this.state.activeUsersHistory.length > 10) {
         this.state.activeUsersHistory.shift();
       }
-      // this.props.sendChartData(this.state.activeUsersHistory);
       this.props.updateHistory(users);
       this.props.sendChartData(this.props.mvHistory);
 
@@ -198,40 +185,14 @@ class MyVariant extends React.Component {
     })
   }
 
-  fetchTop100(){
-    var self = this;
-    axios.get(self.state.top100usersURL).then(res=>{
-      this.setState({
-        'top100results': res.data
-      })
-      this.shape100Data();
-    }).catch(err=>{
-      throw err;
-    })
-  }
-
-  shape100Data(){
-    let res =[]
-    let arr = this.state.top100results.rows;
-    for (var i = 0; i < arr.length; i++) {
-      let long = parseFloat(arr[i][2]);
-      let lat = parseFloat(arr[i][1]);
-      let obj ={'name': arr[i][0],'coordinates':[long,lat],'users': arr[i][3] };
-      res.push(obj);
-    }
-    // this.setState({
-    //   'mapData': res
-    // });
-    this.props.sendMap100Users(res);
-  }
 
   shapeMapData(){
     let res =[]
     let arr = this.state.results.rows;
     for (var i = 0; i < arr.length; i++) {
-      let long = parseFloat(arr[i][5]);
-      let lat = parseFloat(arr[i][4]);
-      let obj ={'api':'MyVariant','name': arr[i][2]+', '+arr[i][3],'coordinates':[lat,long],'users': arr[i][7] };
+      let lat = parseFloat(arr[i][3]);
+      let long = parseFloat(arr[i][2]);
+      let obj ={'api':'MyVariant','name': arr[i][1]+', '+arr[i][0],'coordinates':[lat,long],'users': arr[i][4] };
       res.push(obj);
     }
     this.setState({
@@ -247,7 +208,6 @@ class MyVariant extends React.Component {
     var self = this;
     this.fetchAnalyticsData();
     this.fetchRealtimeUsers();
-    this.fetchTop100();
     this.drawPages();
     this.drawActions();
     this.timer =setInterval(function(){
@@ -293,13 +253,13 @@ class MyVariant extends React.Component {
                                 duration={3}
                                 separator=","/>
                     </h1>
-                    <h4 style={{color:'#b1b1b1'}}>
+                    <h5 style={{color:'#b1b1b1'}}>
                       Requests in the Last 30 Days
-                    </h4>
+                    </h5>
                   </div>
                 </div>
             </div>
-            <div id='charts' className='activeUsersBoxTest col-sm-12 col-md-12 col-lg-12' style={{display:'flex'}}>
+            <div id='charts' className='activeUsersBoxTest col-sm-12 col-md-12 col-lg-12' style={{display:'flex',padding:5}}>
               <img src="/static/img/screw.png" className="screwTopRight"/>
               <img src="/static/img/screw.png" className="screwTopLeft"/>
               <img src="/static/img/screw.png" className="screwBottomRight"/>

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux'
-import { geoMercator, geoPath } from "d3-geo/src"
+import { geoEqualEarth, geoPath } from "d3-geo/src"
 import { feature } from "topojson-client"
 
 
@@ -16,10 +16,12 @@ class ReactMap extends React.Component {
 
     this.handleCountryClick = this.handleCountryClick.bind(this)
     this.handleMarkerHover = this.handleMarkerHover.bind(this)
+    this.handleMarkerLeave = this.handleMarkerLeave.bind(this)
     this.colorMarker = this.colorMarker.bind(this)
     this.colorMarker100 = this.colorMarker100.bind(this)
     this.sizeMarker = this.sizeMarker.bind(this)
     this.addComma = this.addComma.bind(this)
+    this.classMarker = this.classMarker.bind(this)
   }
   addComma(number){
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -35,6 +37,13 @@ class ReactMap extends React.Component {
       return '#f7f49c';
     }
   }
+  classMarker(users){
+    if ( users > 900000) {
+      return 'marker blink';
+    }else{
+      return 'marker';
+    }
+  }
   colorMarker100(users){
     if ( users > 900000) {
       return '#ff3e38';
@@ -47,12 +56,12 @@ class ReactMap extends React.Component {
         return this.props.color
       }else{
         return '#40c6ff';
-      }    
+      }
     }
   }
   sizeMarker(users){
     if ( users > 900000) {
-      return 8;
+      return 10;
     }else if (users < 900000 && users > 400000 ) {
       return 6;
     }else if (users < 400000 && users > 100000 ) {
@@ -62,20 +71,27 @@ class ReactMap extends React.Component {
     }
   }
   projection() {
-    return geoMercator()
-      .scale(100)
-      .translate([ 800 / 2, 450 / 2 ])
+    return geoEqualEarth()
+      .scale(170)
+      .translate([ 700 / 2, 450 / 2 ])
   }
   handleCountryClick(countryIndex) {
     // console.log("Clicked on country: ", this.state.worlddata[countryIndex])
   }
   handleMarkerHover(markerIndex) {
+    var self = this;
+    self.setState({
+      'hoverInfo': self.props.mapData[markerIndex].name + ": "+self.addComma(self.props.mapData[markerIndex].users)+" users"
+    })
+  }
+  handleMarkerLeave() {
     this.setState({
-      'hoverInfo': this.props.mapData[markerIndex].name + ": "+this.addComma(this.props.mapData[markerIndex].users)+" users"
+      'hoverInfo': 'Where Are Our Users?'
     })
   }
   componentDidMount() {
-    fetch("https://unpkg.com/world-atlas@1/world/110m.json")
+    // fetch("https://unpkg.com/world-atlas@1/world/110m.json")
+    fetch("/static/img/topology.json")
       .then(response => {
         if (response.status !== 200) {
           console.log(`There was a problem: ${response.status}`)
@@ -93,24 +109,24 @@ class ReactMap extends React.Component {
   render() {
     return (
       <div className="flex padding20" style={{ margin:'auto'}}>
-        <div className="padding20" style={{flex:1}}>
+        <div style={{flex:1, paddingRight:'10px'}}>
           <table style={{margin:'auto'}} className='mapTable'>
-            <thead>
+            {/* <thead>
               <tr>
                 <th className='text-light'>
                   Top 10 Users
                 </th>
               </tr>
-            </thead>
+            </thead> */}
             <tbody>
-              {this.props.mapData.map( (city,i)=>{
+              {this.props.mapData.slice(0,10).map( (city,i)=>{
                 return (
                   <tr key={i} >
-                    <td className="top10Row">
+                    <td className="top10Row swing-in-top-fwd">
                       {city.api === 'MyGene' && <span className="badge mG text-light scaleHalf">MG</span>}
                       {city.api === 'MyVariant' && <span className="badge mV text-light scaleHalf">MV</span>}
                       {city.api === 'MyChem' && <span className="badge mC text-light scaleHalf">MV</span>}
-                      <span className={this.sizeMarker(city.users) > 7 ?'bold twoEM': 'bold'} style={{color: this.colorMarker(city.users), textShadow:'2px 2px black' }}>{ this.addComma(city.users) }</span>
+                      <span className={this.sizeMarker(city.users) > 7 ?'bold topEM': 'bold notTopEM'} style={{color: this.colorMarker(city.users), textShadow:'2px 2px black' }}>{ this.addComma(city.users) }</span>
                       <br/>
                       <b style={{fontSize:'10px'}} className="whiteText">{city.name}</b>
                     </td>
@@ -120,8 +136,8 @@ class ReactMap extends React.Component {
             </tbody>
           </table>
         </div>
-        <div className="padding20" style={{flex:4}}>
-          <svg className='mapBox' style={{background:'#323232','width':'100%'}} width={ 800 } height={ 450 } viewBox="0 0 800 450">
+        <div style={{flex:4}}>
+          <svg className='mapBox' style={{'width':'100%'}} width={ 800 } height={ 450 } viewBox="0 0 800 450">
             <g className="countries">
               {
                 this.state.worlddata.map((d,i) => (
@@ -132,22 +148,24 @@ class ReactMap extends React.Component {
                     fill={ `rgba(38,50,56,0.4)` }
                     stroke="#FFFFFF"
                     strokeWidth={ 0.5 }
-                    onClick={ () => this.handleCountryClick(i) }
+                    // onClick={ () => this.handleCountryClick(i) }
                   />
                 ))
               }
             </g>
             <g className="markers">
               {
-                this.props.map100.map((city, i) => (
+                this.props.mapData.map((city, i) => (
                   <circle
                     key={ `marker-${i}` }
                     cx={ this.projection()(city.coordinates)[0] }
                     cy={ this.projection()(city.coordinates)[1] }
                     r={ this.sizeMarker(city.users) }
                     fill={ this.colorMarker100(city.users) }
-                    stroke="none"
-                    className="marker"
+                    onMouseEnter={ () => this.handleMarkerHover(i) }
+                    onMouseLeave={ () => this.handleMarkerLeave() }
+                    stroke=""
+                    className={ this.classMarker(city.users) }
                   />
                 ))
               }
@@ -163,7 +181,8 @@ class ReactMap extends React.Component {
 function mapStateToProps(state) {
   return {
     'mapData' : state.mapData,
-    'map100': state.mapData100
+    'map100': state.mapData100,
+    'allMapData': state.mapData.concat(state.mapData100)
   }
 }
 
